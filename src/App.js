@@ -7,10 +7,9 @@ export default class App extends React.Component {
   render() {
     return (
       <Switch>
-        <Route exect path="/" render={ (routeProps) => <Login { ...routeProps } /> } />
-        <Route exact path="/carteira" render={ Wallet } />
+        <Route exact path="/" render={ (routeProps) => <Login { ...routeProps } /> } />
+        <Route exact path="/carteira" component={ Wallet } />
       </Switch>
-
     );
   }
 }
