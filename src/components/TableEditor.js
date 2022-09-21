@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { walletAddExpenses, walletValueAdd, saveData } from '../redux/actions';
+import { walletValueAdd, saveData, deleteExpenses } from '../redux/actions';
 
-class WalletForm extends Component {
+class TableEditor extends Component {
   state = {
     currencies: [],
     expensesArr: {
@@ -13,13 +13,32 @@ class WalletForm extends Component {
       currency: '',
       method: '',
       tag: '',
-      exchangeRates: {},
     },
   };
 
   componentDidMount() {
+    const { expenses, idToEdit } = this.props;
+    const findExpense = expenses.find(({ id }) => id === idToEdit);
     this.fetchCurrencies();
+    this.setState({
+      ...findExpense,
+    });
   }
+
+  /*   componentDidUpdate(prevProps) {
+    if (prevProps.expensesArr !== )
+    const { expenses, idToEdit } = this.props;
+    console.log(idToEdit, expenses);
+    const expenser = expenses.find((expense) => expense.id === idToEdit);
+    console.log(expenser);
+    this.setState = {
+      value: expenser.value,
+      currency: expenser.currency,
+      mathod: expenser.method,
+      tag: expenser.tag,
+      description: expenser.description,
+    };
+  } */
 
   fetchCurrencies = async () => {
     // ajuda do Rubens Deola - Turma 23 - Tribo A
@@ -31,9 +50,9 @@ class WalletForm extends Component {
       (key) => key !== 'USDT',
     );
     this.setState(
-      { currencies: currenciesArray,
+      {
+        currencies: currenciesArray,
         expensesArr: {
-          id: 0,
           value: '',
           description: '',
           currency: 'USD',
@@ -41,6 +60,7 @@ class WalletForm extends Component {
           tag: 'Alimentação',
           exchangeRates: coinJSON,
         },
+
       },
       () => {
         dispatch(saveData(coinJSON));
@@ -61,27 +81,18 @@ class WalletForm extends Component {
     });
   };
 
-  handleButton = async (event) => {
-    event.preventDefault();
-    const { dispatch, expenses } = this.props;
-    const { expensesArr, currencies } = this.state;
-    const idNum = expenses.length;
-    const link = 'https://economia.awesomeapi.com.br/json/all';
-    const fetchCoin = await fetch(link);
-    const coinJ = await fetchCoin.json();
-    dispatch(walletAddExpenses(expensesArr));
-    this.setState({
-      currencies,
-      expensesArr: {
-        id: idNum + 1,
-        value: '',
-        description: '',
-        currency: 'USD',
-        method: 'Dinheiro',
-        tag: 'Alimentação',
-        exchangeRates: coinJ,
-      },
-    });
+  handleButton = async () => {
+    const { expenses, idToEdit, dispatch } = this.props;
+    const { expensesArr } = this.state;
+    const filterOfExpense = expenses.filter(({ id }) => id !== idToEdit);
+    const saveExpense = {
+      ...expensesArr, id: idToEdit,
+    };
+    const newExpense = [saveExpense, ...filterOfExpense];
+    dispatch(deleteExpenses(newExpense));
+    /*  dispatch(editExpenses());
+    editExpense(newExpense);
+    editExpense2(); */
   };
 
   render() {
@@ -161,10 +172,9 @@ class WalletForm extends Component {
           </div>
           <button
             type="button"
-            onKeyPress={ this.handleOnKeyPress }
             onClick={ this.handleButton }
           >
-            Adicionar despesa
+            Editar despesa
           </button>
         </form>
       </div>
@@ -173,13 +183,15 @@ class WalletForm extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  currency: state.wallet.currencies,
+  currencies: state.wallet.currencies,
   expenses: state.wallet.expenses,
+  idToEdit: state.wallet.idToEdit,
 });
 
-WalletForm.propTypes = {
+TableEditor.propTypes = {
   dispatch: PropTypes.func.isRequired,
   expenses: PropTypes.instanceOf(Array).isRequired,
+  idToEdit: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps)(WalletForm);
+export default connect(mapStateToProps)(TableEditor);

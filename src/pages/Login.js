@@ -10,13 +10,6 @@ class Login extends React.Component {
     password: '',
   };
 
-  handleOnKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      console.log('Funfo');
-      this.handlerButton();
-    }
-  };
-
   buttonDisabled = () => {
     const { email, password } = this.state;
     const PASSWORD_MIN_LENGTH = 6;
@@ -29,7 +22,7 @@ class Login extends React.Component {
 
   handleOnChange = ({ target }) => {
     const { name } = target;
-    const value = (target.type === 'checkbox') ? target.checked : target.value;
+    const { value } = target;
     this.setState({
       [name]: value,
     }, this.buttonDisabled);
@@ -83,7 +76,6 @@ class Login extends React.Component {
             data-testid="login-submit-button"
             type="button"
             disabled={ isSubmiteButtonDisabled }
-            onKeyPress={ this.handleOnKeyPress }
             onClick={ this.handlerButton }
           >
             Entrar

@@ -1,18 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { saveExpenseValue } from '../redux/actions';
 
 class Header extends Component {
+  getValuesExpenses = () => {
+    const { expenses, dispatch } = this.props;
+    let total = 0;
+
+    if (expenses.length > 0) {
+      expenses.forEach((expense) => {
+        total += Number(expense.value)
+          * Number(expense.exchangeRates[expense.currency].ask);
+      });
+    }
+    const result = Number(total).toFixed(2);
+    dispatch(saveExpenseValue(result));
+    return result;
+  };
+
   render() {
-    const { email,
-      expenses } = this.props;
+    const { email } = this.props;
     return (
       <header>
         <div data-testid="email-field">
           {email}
         </div>
         <div data-testid="total-field">
-          { expenses }
+          {this.getValuesExpenses() }
         </div>
         <div data-testid="header-currency-field">
           BRL
@@ -30,7 +45,8 @@ const mapStateToProps = (state) => ({
 
 Header.propTypes = {
   email: PropTypes.string.isRequired,
-  expenses: PropTypes.number.isRequired,
+  expenses: PropTypes.instanceOf(Array).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps)(Header);
