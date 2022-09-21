@@ -5,7 +5,6 @@ import walletData from './wallet';
 const rootReducer = combineReducers({
   user: userData,
   wallet: walletData,
-  currencies: walletData,
 });
 
 // Configure os seus reducers.

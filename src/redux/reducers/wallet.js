@@ -3,13 +3,16 @@ import { WALLET_REDUCE } from '../actions/index';
 
 const INITIAL_STATE = {
   expenses: 0,
-  currency: 'BRL',
+  currencies: [],
 };
 
 const walletData = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case WALLET_REDUCE:
-    return action.value;
+    return {
+      ...state,
+      currencies: action.value,
+    };
   default:
     return state;
   }

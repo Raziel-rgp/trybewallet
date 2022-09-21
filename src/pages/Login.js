@@ -10,6 +10,13 @@ class Login extends React.Component {
     password: '',
   };
 
+  handleOnKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      console.log('Funfo');
+      this.handlerButton();
+    }
+  };
+
   buttonDisabled = () => {
     const { email, password } = this.state;
     const PASSWORD_MIN_LENGTH = 6;
@@ -76,6 +83,7 @@ class Login extends React.Component {
             data-testid="login-submit-button"
             type="button"
             disabled={ isSubmiteButtonDisabled }
+            onKeyPress={ this.handleOnKeyPress }
             onClick={ this.handlerButton }
           >
             Entrar

@@ -60,3 +60,4 @@ export const initialExpenses = [
 ];
 
 export const currenciesOptions = Object.keys(mockData).filter((key) => key !== 'USDT');
+
